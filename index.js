@@ -15,10 +15,6 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.get('/book', (req, res) => {
-    res.send('Ore no na wa Okem-desu');
-});
-
 //Fetch
 app.get('/product', async (req, res) => {
     try{
@@ -71,7 +67,11 @@ app.put('/product/:id', async (req, res) => {
 app.delete('/product/:id', async (req, res) => {
     try{
         const {id} = req.params;
-        const product = await Product.findByIdAndDelete
+        const product = await Product.findByIdAndDelete(id);
+        if(!product){
+            return res.status(404).json({message: `cannot find any product with ID ${id}`});
+        }
+        res.status(200).json(product);
     }catch(error){
         res.status(500).json({message: error.message});
     }
@@ -85,8 +85,3 @@ connect(process.env.MONGODB_URI)
 }).catch((error) => {
     console.log(error)
 });
-// const db = mongoose.connection;
-// db.o
-
-
-
